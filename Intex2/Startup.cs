@@ -58,6 +58,14 @@ namespace Intex2
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //adding the CSP Header
+            app.Use(async (context, next) =>
+            {
+                //may need to add more website links or image links
+                context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' https://cdn.jsdelivr.net; font-src 'self'; img-src 'self'; frame-src 'self'");
+                await next();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
