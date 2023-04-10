@@ -1,6 +1,7 @@
 using Intex2.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -28,10 +29,44 @@ namespace Intex2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            /*services.AddControllersWithViews();
+            services.AddRazorPages();*/
+
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential 
+                // cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                // requires using Microsoft.AspNetCore.Http;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+             });
+
+
+            //for better passwords
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 13;
+                options.Password.RequiredUniqueChars = 5;
+            });
+
+            //needed for cookies
+            /*            services.Configure<CookiePolicyOptions>(options =>
+                        {
+                            // This lambda determines whether user consent for non-essential 
+                            // cookies is needed for a given request.
+                            options.CheckConsentNeeded = context => true;
+                            // requires using Microsoft.AspNetCore.Http;
+                            options.MinimumSameSitePolicy = SameSiteMode.None;
+                        });*/
+
             services.AddRazorPages();
         }
 
@@ -52,6 +87,8 @@ namespace Intex2
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            //for cookies
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
