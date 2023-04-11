@@ -28,6 +28,7 @@ namespace Intex2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -56,16 +57,6 @@ namespace Intex2
                 options.Password.RequiredLength = 13;
                 options.Password.RequiredUniqueChars = 5;
             });
-
-            //needed for cookies
-            /*            services.Configure<CookiePolicyOptions>(options =>
-                        {
-                            // This lambda determines whether user consent for non-essential 
-                            // cookies is needed for a given request.
-                            options.CheckConsentNeeded = context => true;
-                            // requires using Microsoft.AspNetCore.Http;
-                            options.MinimumSameSitePolicy = SameSiteMode.None;
-                        });*/
 
             services.AddRazorPages();
         }
